@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AudioPreviewInfo } from '../types/media'
 
+const elevenLabsTranscriptionUrl = 'https://elevenlabs.io/es/audio-to-text'
+
 type AudioPreviewPlayerProps = {
   outputPath: string
   onOpenOutputLocation: () => Promise<void>
@@ -299,6 +301,14 @@ export default function AudioPreviewPlayer({
         </div>
 
         <div className="flex flex-wrap gap-3 md:justify-end">
+          <a
+            href={elevenLabsTranscriptionUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-14 items-center justify-center rounded-full bg-cyan-300 px-5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
+          >
+            Transcribir con ElevenLabs
+          </a>
           <button
             type="button"
             onClick={() => {

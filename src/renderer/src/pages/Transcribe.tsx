@@ -8,6 +8,7 @@ type TranscribeProps = {
 }
 
 const defaultApiUrl = import.meta.env.VITE_TRANSCRIPTION_API_URL ?? ''
+const elevenLabsTranscriptionUrl = 'https://elevenlabs.io/es/audio-to-text'
 
 export default function Transcribe({ theme, onToggleTheme }: TranscribeProps): React.JSX.Element {
   const [searchParams] = useSearchParams()
@@ -87,6 +88,25 @@ export default function Transcribe({ theme, onToggleTheme }: TranscribeProps): R
         </nav>
 
         <section className="app-panel space-y-4 rounded-3xl border p-5 shadow-[0_20px_60px_var(--shadow-color)]">
+          <div className="app-card rounded-2xl border p-5">
+            <p className="app-label text-sm font-semibold uppercase tracking-wide">Próximamente</p>
+            <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="app-text max-w-2xl text-sm leading-6">
+                Estamos trabajando en la experiencia de transcripción dentro de Aurea. Mientras
+                tanto, puedes usar las transcripciones gratuitas de ElevenLabs desde este acceso
+                directo.
+              </p>
+              <a
+                href={elevenLabsTranscriptionUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-cyan-300 px-5 py-2 font-semibold text-slate-950 transition hover:bg-cyan-200"
+              >
+                Abrir ElevenLabs
+              </a>
+            </div>
+          </div>
+
           <div className="app-card rounded-2xl border p-5">
             <div className="grid gap-4">
               <label className="grid gap-2">
