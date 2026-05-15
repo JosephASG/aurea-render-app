@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AudioPreviewPlayer from './AudioPreviewPlayer'
+import { FaXmark } from "react-icons/fa6";
 
 type ExtractionOverlayProps = {
   progress: number | null
@@ -53,7 +54,7 @@ export default function ExtractionOverlay({
 
   return (
     <div className="extraction-overlay fixed inset-0 z-50 grid place-items-center px-5">
-      <div className="extraction-dialog relative w-full max-w-3xl rounded-[2rem] border p-6 shadow-2xl">
+      <div className="extraction-dialog relative w-full max-w-3xl">
         {isComplete ? (
           <button
             type="button"
@@ -61,16 +62,16 @@ export default function ExtractionOverlay({
             className="overlay-close-button absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full text-lg font-black"
             aria-label="Cerrar visualizador de audio"
           >
-            ×
+            <FaXmark />
           </button>
         ) : null}
 
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="app-kicker text-xs font-semibold uppercase tracking-[0.22em]">
+            {/* <p className="app-kicker text-xs font-semibold uppercase tracking-[0.22em]">
               {isComplete ? 'Audio listo' : 'Processing'}
-            </p>
-            <h2 className="app-title mt-3 text-3xl font-black tracking-tight">
+            </p> */}
+            <h2 className="app-title mt-3 text-3xl font-medium">
               {isComplete ? 'Audio separado' : 'Extrayendo audio'}
             </h2>
             <p className="app-muted mt-2 text-sm">
@@ -81,7 +82,7 @@ export default function ExtractionOverlay({
             </p>
           </div>
           {!isComplete ? (
-            <div className="progress-orb grid h-16 w-16 shrink-0 place-items-center rounded-full text-sm font-black">
+            <div className="grid h-16 shrink-0 place-items-center text-sm font-medium">
               {shownProgress}%
             </div>
           ) : null}
@@ -95,7 +96,7 @@ export default function ExtractionOverlay({
             />
           </div>
         ) : (
-          <div className="progress-track mt-6 h-4 overflow-hidden rounded-full">
+          <div className="progress-track mt-6 h-1 overflow-hidden rounded-full">
             <div
               className="progress-fill h-full rounded-full"
               style={{ width: `${shownProgress}%` }}
@@ -103,21 +104,24 @@ export default function ExtractionOverlay({
           </div>
         )}
 
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <p className="app-muted text-xs">
-            {isComplete
-              ? 'Cierra este panel para separar otro audio.'
-              : 'La ventana queda bloqueada hasta terminar o cancelar.'}
-          </p>
-          {isComplete ? (
+        {isComplete ? (
+          <div className="mt-4 flex flex-col items-center justify-between gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300"
+              className="rounded-3xl bg-emerald-400 px-4 h-14 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300 w-[420px]"
             >
               Separar otro audio
             </button>
-          ) : (
+            <p className="app-muted text-xs">
+              Cierra este panel para separar otro audio.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <p className="app-muted text-xs">
+              La ventana queda bloqueada hasta terminar o cancelar.
+            </p>
             <button
               type="button"
               onClick={() => {
@@ -127,8 +131,8 @@ export default function ExtractionOverlay({
             >
               Cancelar
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

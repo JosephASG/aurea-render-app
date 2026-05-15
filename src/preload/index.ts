@@ -36,6 +36,14 @@ const transcriptionChannels = {
   transcribeAudio: 'transcription:transcribe-audio'
 } as const
 
+const windowChannels = {
+  minimize: 'window:minimize',
+  toggleMaximize: 'window:toggle-maximize',
+  close: 'window:close',
+  isMaximized: 'window:is-maximized',
+  maximizedChanged: 'window:maximized-changed'
+} as const
+
 const mediaApi = {
   selectVideo: (): Promise<string | null> => ipcRenderer.invoke(channels.selectVideo),
   selectOutputDirectory: (): Promise<string | null> =>
@@ -97,10 +105,26 @@ const transcriptionApi = {
     ipcRenderer.invoke(transcriptionChannels.transcribeAudio, request)
 }
 
+const windowApi = {
+  minimize: (): Promise<void> => ipcRenderer.invoke(windowChannels.minimize),
+  toggleMaximize: (): Promise<boolean> => ipcRenderer.invoke(windowChannels.toggleMaximize),
+  close: (): Promise<void> => ipcRenderer.invoke(windowChannels.close),
+  isMaximized: (): Promise<boolean> => ipcRenderer.invoke(windowChannels.isMaximized),
+  onMaximizedChanged: (callback: (isMaximized: boolean) => void): (() => void) => {
+    const listener = (_: Electron.IpcRendererEvent, isMaximized: boolean): void =>
+      callback(isMaximized)
+    ipcRenderer.on(windowChannels.maximizedChanged, listener)
+    return () => {
+      ipcRenderer.removeListener(windowChannels.maximizedChanged, listener)
+    }
+  }
+}
+
 if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('media', mediaApi)
   contextBridge.exposeInMainWorld('appConfig', configApi)
   contextBridge.exposeInMainWorld('transcription', transcriptionApi)
+  contextBridge.exposeInMainWorld('windowControls', windowApi)
 } else {
   // @ts-ignore - fallback for non-isolated context
   window.media = mediaApi
@@ -108,4 +132,6 @@ if (process.contextIsolated) {
   window.appConfig = configApi
   // @ts-ignore - fallback for non-isolated context
   window.transcription = transcriptionApi
+  // @ts-ignore - fallback for non-isolated context
+  window.windowControls = windowApi
 }

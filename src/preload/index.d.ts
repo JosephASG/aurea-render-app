@@ -35,11 +35,20 @@ type TranscriptionApi = {
   transcribeAudio: (request: TranscriptionRequest) => Promise<TranscriptionResponse>
 }
 
+type WindowControlsApi = {
+  minimize: () => Promise<void>
+  toggleMaximize: () => Promise<boolean>
+  close: () => Promise<void>
+  isMaximized: () => Promise<boolean>
+  onMaximizedChanged: (callback: (isMaximized: boolean) => void) => () => void
+}
+
 declare global {
   interface Window {
     media: MediaApi
     appConfig: AppConfigApi
     transcription: TranscriptionApi
+    windowControls: WindowControlsApi
   }
 }
 

@@ -38,10 +38,7 @@ export default function Home({ theme, onToggleTheme }: HomeProps): React.JSX.Ele
       <div className="mx-auto max-w-4xl">
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="app-kicker text-xs font-semibold uppercase tracking-[0.22em]">
-              Desktop Media Utility
-            </p>
-            <h1 className="app-title mt-3 text-4xl font-black tracking-tight">MediaForge</h1>
+            <h1 className="app-title mt-3 text-4xl font-medium">Aurea Render</h1>
             <p className="app-muted mt-2 max-w-2xl text-sm">
               Extract clean, high-quality audio from video files with a secure job-based media
               engine.

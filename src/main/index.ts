@@ -51,6 +51,40 @@ function registerConfigIpcHandlers(): void {
   })
 }
 
+function registerWindowIpcHandlers(): void {
+  ipcMain.handle('window:minimize', (event) => {
+    BrowserWindow.fromWebContents(event.sender)?.minimize()
+  })
+
+  ipcMain.handle('window:toggle-maximize', (event) => {
+    const window = BrowserWindow.fromWebContents(event.sender)
+
+    if (!window) {
+      return false
+    }
+
+    if (window.isMaximized()) {
+      window.unmaximize()
+    } else {
+      window.maximize()
+    }
+
+    return window.isMaximized()
+  })
+
+  ipcMain.handle('window:close', (event) => {
+    BrowserWindow.fromWebContents(event.sender)?.close()
+  })
+
+  ipcMain.handle('window:is-maximized', (event) => {
+    return BrowserWindow.fromWebContents(event.sender)?.isMaximized() ?? false
+  })
+}
+
+function notifyMaximizedState(window: BrowserWindow): void {
+  window.webContents.send('window:maximized-changed', window.isMaximized())
+}
+
 function createMainWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1040,
@@ -58,6 +92,7 @@ function createMainWindow(): void {
     minWidth: 860,
     minHeight: 620,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -72,6 +107,18 @@ function createMainWindow(): void {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.on('maximize', () => {
+    if (mainWindow) {
+      notifyMaximizedState(mainWindow)
+    }
+  })
+
+  mainWindow.on('unmaximize', () => {
+    if (mainWindow) {
+      notifyMaximizedState(mainWindow)
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -118,6 +165,7 @@ if (hasSingleInstanceLock) {
     registerMediaIpcHandlers()
     registerTranscriptionIpcHandlers()
     registerConfigIpcHandlers()
+    registerWindowIpcHandlers()
     createMainWindow()
 
     app.on('activate', () => {

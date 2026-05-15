@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AudioPreviewInfo } from '../types/media'
+import { FaRegFolder, FaPlay, FaPause } from "react-icons/fa6";
 
 const elevenLabsTranscriptionUrl = 'https://elevenlabs.io/es/audio-to-text'
 
@@ -249,90 +250,99 @@ export default function AudioPreviewPlayer({
   }
 
   return (
-    <section className="audio-preview-card overflow-hidden rounded-[2rem] border p-5 shadow-[0_24px_70px_var(--shadow-color)]">
-      <audio
-        ref={audioRef}
-        src={audioUrl ?? undefined}
-        preload="metadata"
-        onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-      />
-
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="audio-recording-label text-sm font-semibold">Audio ready</p>
-          <p className="audio-time mt-2 font-black tracking-tight">{formatDuration(duration)}</p>
-          <p className="mt-2 max-w-md break-all text-xs text-white/45">
-            {audioInfo?.name ?? outputPath}
-          </p>
-        </div>
-        <div className="grid gap-2 text-right">
-          <span className="audio-size-pill rounded-full px-3 py-1 text-xs font-black">
-            {formatBytes(audioInfo?.sizeBytes ?? 0)}
-          </span>
-          <span className="text-sm font-black text-white/70">
-            .{audioInfo?.extension ?? 'AUDIO'}
-          </span>
-        </div>
-      </div>
-
-      <div className="mt-8 grid gap-5 md:grid-cols-[1fr_auto] md:items-end">
-        <div className="audio-wave-shell rounded-[1.5rem] p-4">
-          <canvas
-            ref={canvasRef}
-            width={720}
-            height={112}
-            onPointerDown={startSeekDrag}
-            onPointerMove={updateSeekDrag}
-            onPointerUp={stopSeekDrag}
-            onPointerCancel={stopSeekDrag}
-            className="h-28 w-full cursor-grab touch-none active:cursor-grabbing"
+    <section className="audio-preview-card flex flex-col justify-center items-center">
+      <div className='w-[420px]'>
+        <div className='bg-black overflow-hidden rounded-3xl p-5 w-full'>
+          <audio
+            ref={audioRef}
+            src={audioUrl ?? undefined}
+            preload="metadata"
+            onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || 0)}
+            onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => setIsPlaying(false)}
           />
-          {isWaveformLoading ? (
-            <div className="audio-wave-spinner" role="status" aria-label="Cargando ondas" />
-          ) : null}
-          <div className="mt-2 flex justify-between text-xs font-semibold text-black/70">
-            <span>{formatDuration(currentTime)}</span>
-            <span>{formatDuration(duration)}</span>
+
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="audio-recording-label text-base font-medium">Audio ready</p>
+              <p className="audio-time mt-2 font-medium tracking-tight">{formatDuration(duration)}</p>
+              <p className="mt-2 max-w-md break-all text-xs text-white/45">
+                {audioInfo?.name ?? outputPath}
+              </p>
+            </div>
+            <div className="grid gap-2 text-right">
+              <span className="audio-size-pill rounded-full px-3 py-1 text-xs font-bold  text-nowrap">
+                {formatBytes(audioInfo?.sizeBytes ?? 0)}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-8 flex flex-col gap-5">
+            <div>
+              <div className='flex mb-4 gap-2 items-end justify-between'>
+                <span className="text-sm font-black text-white/70">
+                  .{audioInfo?.extension ?? 'AUDIO'}
+                </span>
+                <div className='flex gap-2 items-center justify-end'>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void togglePlayback()
+                    }}
+                    disabled={!audioUrl}
+                    className="audio-control-button grid h-14 w-14 place-items-center rounded-full text-lg font-black border cursor-pointer hover:bg-white/30  duration-300 transition-all"
+                    aria-label={isPlaying ? 'Pause audio preview' : 'Play audio preview'}
+                  >
+                    {isPlaying ? <FaPause /> : <FaPlay />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void onOpenOutputLocation()
+                    }}
+                    className="audio-control-button grid h-14 w-14 place-items-center rounded-full text-lg font-black border cursor-pointer hover:bg-white/30  duration-300 transition-all"
+                    aria-label="Open output location"
+                  >
+                    <FaRegFolder />
+                  </button>
+                </div>
+              </div>
+              <div className="audio-wave-shell rounded-[1.5rem] p-4 w-full">
+                <canvas
+                  ref={canvasRef}
+                  width={720}
+                  height={112}
+                  onPointerDown={startSeekDrag}
+                  onPointerMove={updateSeekDrag}
+                  onPointerUp={stopSeekDrag}
+                  onPointerCancel={stopSeekDrag}
+                  className="h-12 w-full cursor-grab touch-none active:cursor-grabbing"
+                />
+                {isWaveformLoading ? (
+                  <div className="audio-wave-spinner" role="status" aria-label="Cargando ondas" />
+                ) : null}
+              </div>
+              <div className="mt-2 flex justify-center text-xs font-semibold text-white/70">
+                <span>{formatDuration(currentTime)}</span>
+                <span className='mx-2'>/</span>
+                <span>{formatDuration(duration)}</span>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div className="flex flex-wrap gap-3 md:justify-end">
+        <div className="flex flex-wrap gap-3 md:justify-end w-full mt-4">
           <a
             href={elevenLabsTranscriptionUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-14 items-center justify-center rounded-full bg-cyan-300 px-5 text-sm font-black text-slate-950 transition hover:bg-cyan-200"
+            className="inline-flex h-14 items-center justify-center rounded-3xl bg-cyan-300 px-5 text-base font-medium text-slate-950 transition hover:bg-cyan-200 w-full"
           >
             Transcribir con ElevenLabs
           </a>
-          <button
-            type="button"
-            onClick={() => {
-              void togglePlayback()
-            }}
-            disabled={!audioUrl}
-            className="audio-control-button grid h-14 w-14 place-items-center rounded-full text-lg font-black"
-            aria-label={isPlaying ? 'Pause audio preview' : 'Play audio preview'}
-          >
-            {isPlaying ? 'Ⅱ' : '▶'}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              void onOpenOutputLocation()
-            }}
-            className="audio-control-button grid h-14 w-14 place-items-center rounded-full text-lg font-black"
-            aria-label="Open output location"
-          >
-            ⊡
-          </button>
         </div>
       </div>
-
       {errorMessage ? <p className="mt-4 text-sm text-orange-200">{errorMessage}</p> : null}
     </section>
   )

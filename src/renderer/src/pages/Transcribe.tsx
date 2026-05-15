@@ -56,10 +56,7 @@ export default function Transcribe({ theme, onToggleTheme }: TranscribeProps): R
       <div className="mx-auto max-w-4xl">
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="app-kicker text-xs font-semibold uppercase tracking-[0.22em]">
-              Speech Pipeline
-            </p>
-            <h1 className="app-title mt-3 text-4xl font-black tracking-tight">Transcribir audio</h1>
+            <h1 className="app-title mt-3 text-4xl font-medium">Transcribir audio</h1>
             <p className="app-muted mt-2 max-w-2xl text-sm">
               Envía el audio extraído a una API externa mediante Axios y recibe el texto para
               revisarlo dentro de la app.

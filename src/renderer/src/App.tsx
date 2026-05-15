@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 import type { AppTheme } from '../../shared/app-config'
+import AppFrame from './components/AppFrame'
 import Home from './pages/Home'
 import Transcribe from './pages/Transcribe'
 
@@ -30,14 +31,16 @@ function App(): React.JSX.Element {
 
   return (
     <HashRouter>
-      <Routes>
-        <Route path="/" element={<Home theme={theme} onToggleTheme={toggleTheme} />} />
-        <Route
-          path="/transcribe"
-          element={<Transcribe theme={theme} onToggleTheme={toggleTheme} />}
-        />
-        <Route path="*" element={<Home theme={theme} onToggleTheme={toggleTheme} />} />
-      </Routes>
+      <AppFrame>
+        <Routes>
+          <Route path="/" element={<Home theme={theme} onToggleTheme={toggleTheme} />} />
+          <Route
+            path="/transcribe"
+            element={<Transcribe theme={theme} onToggleTheme={toggleTheme} />}
+          />
+          <Route path="*" element={<Home theme={theme} onToggleTheme={toggleTheme} />} />
+        </Routes>
+      </AppFrame>
     </HashRouter>
   )
 }
