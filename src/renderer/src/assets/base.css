@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'Satoshi-Variable';
-  src: url('./fonts/Satoshi-Variable.woff2') format('woff2'),
+  src:
+    url('./fonts/Satoshi-Variable.woff2') format('woff2'),
     url('./fonts/Satoshi-Variable.woff') format('woff'),
     url('./fonts/Satoshi-Variable.ttf') format('truetype');
   font-weight: 300 900;
@@ -230,6 +231,46 @@ button {
   background: var(--field-bg);
   border-color: var(--border-color);
   color: var(--text-secondary);
+}
+
+.transcription-tabs {
+  background: color-mix(in srgb, var(--field-bg) 78%, transparent);
+  border-color: var(--border-color);
+}
+
+.transcription-tab {
+  color: var(--text-muted);
+}
+
+.transcription-tab:hover,
+.transcription-tab-active {
+  background: color-mix(in srgb, var(--accent) 15%, var(--field-bg));
+  color: var(--text-primary);
+}
+
+.transcription-list-item {
+  background: color-mix(in srgb, var(--field-bg) 84%, transparent);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.transcription-list-item:hover,
+.transcription-list-item-active {
+  background: color-mix(in srgb, var(--accent) 14%, var(--field-bg));
+  border-color: color-mix(in srgb, var(--accent) 54%, var(--border-color));
+}
+
+.transcription-preview {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--field-bg) 96%, transparent), var(--field-bg)),
+    radial-gradient(
+      circle at 100% 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 22rem
+    );
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  font-family: 'Satoshi-Variable', sans-serif;
 }
 
 .secondary-button:hover,

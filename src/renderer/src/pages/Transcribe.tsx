@@ -58,7 +58,7 @@ export default function Transcribe({ theme, onToggleTheme }: TranscribeProps): R
           <div>
             <h1 className="app-title mt-3 text-4xl font-medium">Transcribir audio</h1>
             <p className="app-muted mt-2 max-w-2xl text-sm">
-              Envía el audio extraído a una API externa mediante Axios y recibe el texto para
+              Envía el audio extraído a una API externa mediante Fetch y recibe el texto para
               revisarlo dentro de la app.
             </p>
           </div>
@@ -81,6 +81,12 @@ export default function Transcribe({ theme, onToggleTheme }: TranscribeProps): R
             className="app-nav-active rounded-xl border px-4 py-2 text-sm font-medium"
           >
             Transcripción
+          </Link>
+          <Link
+            to="/transcriptions"
+            className="secondary-button rounded-xl border px-4 py-2 text-sm font-medium"
+          >
+            Biblioteca TXT
           </Link>
         </nav>
 

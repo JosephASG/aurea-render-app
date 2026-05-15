@@ -9,6 +9,7 @@ import type {
 } from '../shared/media'
 import type { AppConfig } from '../shared/app-config'
 import type { TranscriptionRequest, TranscriptionResponse } from '../shared/transcription'
+import type { SavedTranscription, SaveTranscriptionInput } from '../shared/transcription-library'
 
 type MediaApi = {
   selectVideo: () => Promise<string | null>
@@ -35,6 +36,12 @@ type TranscriptionApi = {
   transcribeAudio: (request: TranscriptionRequest) => Promise<TranscriptionResponse>
 }
 
+type TranscriptionLibraryApi = {
+  list: () => Promise<SavedTranscription[]>
+  save: (input: SaveTranscriptionInput) => Promise<SavedTranscription>
+  openLocation: (filePath: string) => Promise<void>
+}
+
 type WindowControlsApi = {
   minimize: () => Promise<void>
   toggleMaximize: () => Promise<boolean>
@@ -48,6 +55,7 @@ declare global {
     media: MediaApi
     appConfig: AppConfigApi
     transcription: TranscriptionApi
+    transcriptionLibrary: TranscriptionLibraryApi
     windowControls: WindowControlsApi
   }
 }

@@ -5,6 +5,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerMediaIpcHandlers } from './ipc/media.ipc'
 import { registerTranscriptionIpcHandlers } from './ipc/transcription.ipc'
+import { registerTranscriptionLibraryIpcHandlers } from './ipc/transcription-library.ipc'
 import { defaultAppConfig, normalizeAppConfig, type AppConfig } from '../shared/app-config'
 
 let mainWindow: BrowserWindow | null = null
@@ -164,6 +165,7 @@ if (hasSingleInstanceLock) {
 
     registerMediaIpcHandlers()
     registerTranscriptionIpcHandlers()
+    registerTranscriptionLibraryIpcHandlers()
     registerConfigIpcHandlers()
     registerWindowIpcHandlers()
     createMainWindow()

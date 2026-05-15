@@ -1,8 +1,6 @@
 import { ipcMain } from 'electron'
-import { createReadStream } from 'fs'
+import { readFile } from 'fs/promises'
 import { basename } from 'path'
-import axios from 'axios'
-import FormData from 'form-data'
 import type { TranscriptionRequest, TranscriptionResponse } from '../../shared/transcription'
 
 const CHANNELS = {
@@ -24,22 +22,44 @@ export function registerTranscriptionIpcHandlers(): void {
         throw new Error('Selecciona un archivo de audio para transcribir.')
       }
 
+      const audioBytes = await readFile(audioPath)
       const formData = new FormData()
-      formData.append('file', createReadStream(audioPath), basename(audioPath))
+      formData.append('file', new Blob([audioBytes]), basename(audioPath))
+      const abortController = new AbortController()
+      const timeout = setTimeout(() => abortController.abort(), 120_000)
 
-      const response = await axios.post<unknown>(apiUrl, formData, {
-        headers: formData.getHeaders(),
-        maxBodyLength: Infinity,
-        maxContentLength: Infinity,
-        timeout: 120_000
-      })
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        body: formData,
+        signal: abortController.signal
+      }).finally(() => clearTimeout(timeout))
+
+      const responsePayload = await parseTranscriptionResponse(response)
+
+      if (!response.ok) {
+        throw new Error(`La API respondió con estado ${response.status}.`)
+      }
 
       return {
-        text: extractTranscriptionText(response.data),
-        raw: response.data
+        text: extractTranscriptionText(responsePayload),
+        raw: responsePayload
       }
     }
   )
+}
+
+async function parseTranscriptionResponse(response: Response): Promise<unknown> {
+  const responseText = await response.text()
+
+  if (!responseText) {
+    return null
+  }
+
+  try {
+    return JSON.parse(responseText)
+  } catch {
+    return responseText
+  }
 }
 
 function extractTranscriptionText(payload: unknown): string {

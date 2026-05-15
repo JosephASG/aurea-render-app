@@ -4,6 +4,7 @@ import type { AppTheme } from '../../shared/app-config'
 import AppFrame from './components/AppFrame'
 import Home from './pages/Home'
 import Transcribe from './pages/Transcribe'
+import TranscriptionLibrary from './pages/TranscriptionLibrary'
 
 function App(): React.JSX.Element {
   const [theme, setTheme] = useState<AppTheme>('dark')
@@ -37,6 +38,10 @@ function App(): React.JSX.Element {
           <Route
             path="/transcribe"
             element={<Transcribe theme={theme} onToggleTheme={toggleTheme} />}
+          />
+          <Route
+            path="/transcriptions"
+            element={<TranscriptionLibrary theme={theme} onToggleTheme={toggleTheme} />}
           />
           <Route path="*" element={<Home theme={theme} onToggleTheme={toggleTheme} />} />
         </Routes>

@@ -10,6 +10,7 @@ import type {
 } from '../shared/media'
 import type { AppConfig } from '../shared/app-config'
 import type { TranscriptionRequest, TranscriptionResponse } from '../shared/transcription'
+import type { SavedTranscription, SaveTranscriptionInput } from '../shared/transcription-library'
 
 const channels = {
   selectVideo: 'media:select-video',
@@ -34,6 +35,12 @@ const configChannels = {
 
 const transcriptionChannels = {
   transcribeAudio: 'transcription:transcribe-audio'
+} as const
+
+const transcriptionLibraryChannels = {
+  list: 'transcription-library:list',
+  save: 'transcription-library:save',
+  openLocation: 'transcription-library:open-location'
 } as const
 
 const windowChannels = {
@@ -105,6 +112,14 @@ const transcriptionApi = {
     ipcRenderer.invoke(transcriptionChannels.transcribeAudio, request)
 }
 
+const transcriptionLibraryApi = {
+  list: (): Promise<SavedTranscription[]> => ipcRenderer.invoke(transcriptionLibraryChannels.list),
+  save: (input: SaveTranscriptionInput): Promise<SavedTranscription> =>
+    ipcRenderer.invoke(transcriptionLibraryChannels.save, input),
+  openLocation: (filePath: string): Promise<void> =>
+    ipcRenderer.invoke(transcriptionLibraryChannels.openLocation, filePath)
+}
+
 const windowApi = {
   minimize: (): Promise<void> => ipcRenderer.invoke(windowChannels.minimize),
   toggleMaximize: (): Promise<boolean> => ipcRenderer.invoke(windowChannels.toggleMaximize),
@@ -124,6 +139,7 @@ if (process.contextIsolated) {
   contextBridge.exposeInMainWorld('media', mediaApi)
   contextBridge.exposeInMainWorld('appConfig', configApi)
   contextBridge.exposeInMainWorld('transcription', transcriptionApi)
+  contextBridge.exposeInMainWorld('transcriptionLibrary', transcriptionLibraryApi)
   contextBridge.exposeInMainWorld('windowControls', windowApi)
 } else {
   // @ts-ignore - fallback for non-isolated context
@@ -132,6 +148,8 @@ if (process.contextIsolated) {
   window.appConfig = configApi
   // @ts-ignore - fallback for non-isolated context
   window.transcription = transcriptionApi
+  // @ts-ignore - fallback for non-isolated context
+  window.transcriptionLibrary = transcriptionLibraryApi
   // @ts-ignore - fallback for non-isolated context
   window.windowControls = windowApi
 }

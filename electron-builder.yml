@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: core-pad
+productName: aurea-render
 directories:
   buildResources: build
 files:

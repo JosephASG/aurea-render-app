@@ -64,6 +64,12 @@ export default function Home({ theme, onToggleTheme }: HomeProps): React.JSX.Ele
           >
             Transcripción
           </Link>
+          <Link
+            to="/transcriptions"
+            className="secondary-button rounded-xl border px-4 py-2 text-sm font-medium"
+          >
+            Biblioteca TXT
+          </Link>
         </nav>
 
         <div className="app-panel space-y-4 rounded-3xl border p-5 shadow-[0_20px_60px_var(--shadow-color)]">
